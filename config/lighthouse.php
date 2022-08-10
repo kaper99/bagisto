@@ -69,7 +69,7 @@ return [
     */
 
     'schema' => [
-        'register' => base_path('vendor/bagisto/graphql-api/src/graphql/schema.graphql'),
+        'register' => base_path('packages/Webkul/GraphQLAPI/graphql/schema.graphql'),
     ],
 
     /*
