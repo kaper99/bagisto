@@ -1,0 +1,62 @@
+version: "3.7"
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    restart: always
+    container_name: appel-a-tous-laravel
+    environment:
+      - "TZ=Europe/Warsaw"
+    user: root
+    networks:
+      - appel-a-tous_network
+    ports:
+      - "80:80"
+    volumes:
+      - "./:/var/www/html"
+    depends_on:
+      - mysql
+      - redis
+
+  mysql:
+    container_name: appel-a-tous-mysql
+    image: mysql:8
+    volumes:
+      - appel-a-tous-mysql_data:/var/lib/mysql
+      - ./my.cnf:/etc/mysql/my.cnf
+    environment:
+      MYSQL_DATABASE: 'system_db'
+      MYSQL_USER: 'system_user'
+      MYSQL_PASSWORD: 'system_secret'
+      MYSQL_ROOT_PASSWORD: 'system_root_password'
+    ports:
+      - 3306:3306
+    networks:
+      - appel-a-tous_network
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_general_ci
+
+  redis:
+    container_name: appel-a-tous-redis
+    image: "docker.io/bitnami/redis:6.2-debian-11"
+    restart: always
+    environment:
+      - ALLOW_EMPTY_PASSWORD=no
+      - REDIS_PASSWORD=secret
+      - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL
+      - "TZ=Europe/Warsaw"
+    networks:
+      - appel-a-tous_network
+    ports:
+      - "6379:6379"
+    volumes:
+      - "appel-a-tous-redis_data:/bitnami/redis/data"
+volumes:
+  appel-a-tous-redis_data:
+    driver: local
+  appel-a-tous-mysql_data:
+    driver: local
+
+networks:
+  appel-a-tous_network:

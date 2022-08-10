@@ -40,8 +40,8 @@ return [
         ],
 
         'admins' => [
-            'driver' => 'eloquent',
-            'model' => Webkul\User\Models\Admin::class,
+            'driver'    => 'eloquent',
+            'model'     => Webkul\GraphQLAPI\Models\User\Admin::class,
         ]
     ],
 
